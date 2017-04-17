@@ -4,7 +4,10 @@
 
 int main(void){
 	double var1,var2,var3,var4;
-	
+
+	attitude radiance_ads;
+
+	gpioInitialise();
 
 	var1 = radiance_ads.ads_read(1);
 	var2 = radiance_ads.ads_read(2);

@@ -22,9 +22,9 @@ class attitude{
 public:
 
 	// Initialize function
-	attitude();
+//	attitude();
 	// Destructor
-	~attitude();
+//	~attitude();
 
 	// User functions
 	double ads_read(int pdiode);
@@ -35,7 +35,8 @@ private:
 
 	// SPI settings
 	const unsigned char mode = SPI_MODE_0;
-	const unsigned char bitsPerWord = 8;
+	const uint8_t bitsPerWord = 8;
+	const uint8_t cs = 0;
 	const unsigned int speed = 1000000;
 
 	// Feedback resistances (ohms)
@@ -48,5 +49,6 @@ private:
 	int spiOpen(); 	// returns spifd
 	int spiClose(int spifd);
 
+};
 
-}
+#endif
