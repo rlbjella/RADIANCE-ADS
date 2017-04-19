@@ -37,7 +37,9 @@ private:
 	const unsigned char mode = SPI_MODE_0;
 	const uint8_t bitsPerWord = 8;
 	const uint8_t cs = 0;
-	const unsigned int speed = 1000000;
+	const uint32_t speed = 1000000;
+	const uint32_t len = 2;
+	const uint16_t delay = 0;
 
 	// Feedback resistances (ohms)
 	const double rf1=1000;

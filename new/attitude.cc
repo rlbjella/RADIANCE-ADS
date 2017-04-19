@@ -6,7 +6,12 @@ double attitude::ads_read(int pdiode){
 
 	// Initialize message struct and spi device
 	struct spi_ioc_transfer spi;
+	memset(&spi,0,sizeof(spi));
+
+	// Open spi device
 	int spifd;
+	spifd = this->spiOpen();
+
 	// Initialize data register
 	unsigned char data[2];
 	data[0] = 0;
@@ -18,15 +23,13 @@ double attitude::ads_read(int pdiode){
 	double current = 0.0;
 	double rf;
 
-	// Open spi device
-	spifd = this->spiOpen();
 
 	// Construct message
 	spi.tx_buf 				= (unsigned long)data;
 	spi.rx_buf 				= (unsigned long)data;
-	spi.len 				= 2;
-	spi.delay_usecs 			= 0;
-	spi.speed_hz	 			= 1000000;
+	spi.len 				= this->len;
+	spi.delay_usecs 			= this->delay;
+	spi.speed_hz	 			= this->speed;
 	spi.bits_per_word 			= this->bitsPerWord;
 	spi.cs_change 				= this->cs;
 
@@ -58,8 +61,8 @@ double attitude::ads_read(int pdiode){
 		std::cout << "spi.tx_buf = " << spi.tx_buf << "\n";
 		std::cout << "spi.rx_buf = " << spi.rx_buf << "\n";
 		std::cout << "spi.speed_hz = " << spi.speed_hz << "\n";
-		std::cout << "spi.bits_per_word = " << spi.bits_per_word << "\n";
-		std::cout << "spi.cs_change = " << spi.cs_change << "\n";
+		std::cout << "spi.bits_per_word = " << (int)spi.bits_per_word << "\n";
+		std::cout << "spi.cs_change = " << (int)spi.cs_change << "\n";
 		std::cout << "spi.len = " << spi.len << "\n";
 
 		// Send message
@@ -84,6 +87,8 @@ double attitude::ads_read(int pdiode){
 		perror("ERROR - problem transmitting spi message");
 		exit(1);
 	}
+
+	std::cout << "RESULT " << (int)data[0] << " " << (int)data[1] << "\n";
 
 	// Get DN
 	dn = (unsigned int)data[0] | data[1];
