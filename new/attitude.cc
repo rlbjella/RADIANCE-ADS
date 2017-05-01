@@ -1,5 +1,5 @@
 #include "attitude.h"
-
+#include <bitset>
 
 // Read current from one photodiode
 double attitude::ads_read(int pdiode){
@@ -19,7 +19,7 @@ double attitude::ads_read(int pdiode){
 
 	// Misc variables and result
 	int retVal = -1;
-	double dn;
+	unsigned short dn;
 	double current = 0.0;
 	double rf;
 
@@ -34,7 +34,7 @@ double attitude::ads_read(int pdiode){
 	spi.cs_change 				= this->cs;
 
 
-	std::cout << sizeof(spi.bits_per_word) << "\n";
+//	std::cout << sizeof(spi.bits_per_word) << "\n";
 
 	// MESSAGE SEND
 		// Set necessary CS pin low to make corresponding ADC listen
@@ -57,13 +57,16 @@ double attitude::ads_read(int pdiode){
 		}
 
 
-		std::cout << "spifd = " << spifd << "\n";
-		std::cout << "spi.tx_buf = " << spi.tx_buf << "\n";
-		std::cout << "spi.rx_buf = " << spi.rx_buf << "\n";
-		std::cout << "spi.speed_hz = " << spi.speed_hz << "\n";
-		std::cout << "spi.bits_per_word = " << (int)spi.bits_per_word << "\n";
-		std::cout << "spi.cs_change = " << (int)spi.cs_change << "\n";
-		std::cout << "spi.len = " << spi.len << "\n";
+//		std::cout << "spifd = " << spifd << "\n";
+//		std::cout << "spi.tx_buf = " << spi.tx_buf << "\n";
+//		std::cout << "spi.rx_buf = " << spi.rx_buf << "\n";
+//		std::cout << "spi.speed_hz = " << spi.speed_hz << "\n";
+//		std::cout << "spi.bits_per_word = " << (int)spi.bits_per_word << "\n";
+//		std::cout << "spi.cs_change = " << (int)spi.cs_change << "\n";
+//		std::cout << "spi.len = " << spi.len << "\n";
+
+		// Wait 4 ms for conversion
+		usleep(4000);
 
 		// Send message
 		retVal = ioctl(spifd, SPI_IOC_MESSAGE(1), &spi);
@@ -88,10 +91,10 @@ double attitude::ads_read(int pdiode){
 		exit(1);
 	}
 
-	std::cout << "RESULT " << (int)data[0] << " " << (int)data[1] << "\n";
+//	std::cout << "RESULT " << std::bitset<8>((int)data[0]) << " " << std::bitset<8>((int)data[1]) << "\n";
 
 	// Get DN
-	dn = (unsigned int)data[0] | data[1];
+	dn = (data[0] << 8) | data[1];
 
 	current = dn;
 
